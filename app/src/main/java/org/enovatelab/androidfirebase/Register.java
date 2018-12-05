@@ -14,57 +14,54 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 
-public class LoginActivity extends AppCompatActivity {
-
-    private EditText loginEmail, loginPassword;
-    private Button loginBtn;
+public class Register extends AppCompatActivity {
 
     private FirebaseAuth firebaseAuth;
+
+    private EditText email, password;
+
+    private Button submitReg;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
-
-        loginEmail = findViewById(R.id.loginEmail);
-        loginPassword = findViewById(R.id.loginPassword);
+        setContentView(R.layout.activity_register);
 
         firebaseAuth = FirebaseAuth.getInstance();
 
-        loginBtn = findViewById(R.id.loginBtn);
-        loginBtn.setOnClickListener(new View.OnClickListener() {
+        email = findViewById(R.id.emailRegister);
+        password = findViewById(R.id.passwordRegister);
+
+        submitReg = findViewById(R.id.submitRegister);
+        submitReg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                //Login Method
-                loginUser();
+                registerNewUser();
             }
         });
     }
 
-    private void loginUser() {
+    private void registerNewUser() {
 
-        //Collect email and password as String
-        String email = loginEmail.getText().toString();
-        String password = loginPassword.getText().toString();
+        String Email = email.getText().toString();
+        String Password = password.getText().toString();
 
-        firebaseAuth.signInWithEmailAndPassword(email, password)
+        firebaseAuth.createUserWithEmailAndPassword(Email, Password)
                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
 
                         if (task.isSuccessful()) {
-
-                            Toast.makeText(LoginActivity.this, "Login Successfully", Toast.LENGTH_LONG).show();
-
-                            startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                            Toast.makeText(Register.this, "Registered Successfully", Toast.LENGTH_LONG).show();
+                            startActivity(new Intent(Register.this, MainActivity.class));
                             finish();
+                        }
+
+                        else {
+                            Toast.makeText(Register.this, "Error: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
                         }
                     }
                 });
-    }
-
-    public void Register(View view) {
-        startActivity(new Intent(LoginActivity.this, Register.class));
     }
 }
